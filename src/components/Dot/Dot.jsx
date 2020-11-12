@@ -1,4 +1,10 @@
-import React, { useReducer } from 'react';
+import React, {
+	useReducer,
+	useContext,
+} from 'react';
+
+import AppContext from '../../context';
+import { getDynamicDotStyles } from "../ComponentStyleHelpers"
 
 const initialDotState = {
 	isDotActive: false,
@@ -8,14 +14,14 @@ const initialDotState = {
 
 function dotStateReducer(state, action) {
 	switch (action.type) {
-		case "":
+		case '':
 			return { ...state, count: state.count + 1 };
-		case "decrement":
+		case 'decrement':
 			return { ...state, count: state.count - 1 };
-		case "toZero":
+		case 'toZero':
 			return { ...state, count: 0 };
-		case "clearTitle":
-			return { ...state, title: "" };
+		case 'clearTitle':
+			return { ...state, title: '' };
 		default:
 			throw new Error();
 	}
@@ -23,19 +29,16 @@ function dotStateReducer(state, action) {
 
 function Dot() {
 	const [dotState, changeDotState] = useReducer(dotStateReducer, initialDotState);
-
+	const { areaSize } = useContext(AppContext);
+	const dotDynamicStyles = getDynamicDotStyles(areaSize)
 	const dotClassList = [
 		'dot',
 		dotState.isDotActive ? 'active' : '',
 		dotState.isDotCaught ? 'caught' : '',
-		dotState.isDotMissed ? 'missed' : ''
+		dotState.isDotMissed ? 'missed' : '',
 	].join(' ');
 
-	return (
-		<div className={dotClassList}>
-
-		</div>
-	);
+	return <div className={dotClassList} style={dotDynamicStyles}/>
 }
 
 export default Dot;

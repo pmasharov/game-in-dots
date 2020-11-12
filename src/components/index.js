@@ -1,3 +1,4 @@
 import Dot from './Dot/Dot'
+import Area from './Area/Area'
 
-export { Dot }
+export { Area, Dot }
