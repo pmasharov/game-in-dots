@@ -1,6 +1,7 @@
 import { setGameSettings } from "./gameSettings";
 import { setGameMode } from "./gameMode";
 import { startGame, stepGame, stopGame } from "./gameStatus";
+import { addToCaught,	addToMissed } from "./gameData";
 
 export {
 	setGameSettings,
@@ -8,4 +9,6 @@ export {
 	startGame,
 	stepGame,
 	stopGame,
+	addToCaught,
+	addToMissed,
 }

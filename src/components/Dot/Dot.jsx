@@ -1,44 +1,48 @@
-import React, {
-	useReducer,
-} from 'react';
+import React from 'react';
 import { connect } from 'react-redux'
 import { getDynamicDotStyles } from "../ComponentStyleHelpers"
 
-const initialDotState = {
-	isDotActive: false,
-	isDotCaught: false,
-	isDotMissed: false,
-};
+function Dot({
+							 isActive,
+							 isCaught,
 
-function dotStateReducer(state, action) {
-	// switch (action.type) {
-	// 	case '':
-	// 		return { ...state, count: state.count + 1 };
-	// 	case 'decrement':
-	// 		return { ...state, count: state.count - 1 };
-	// 	case 'toZero':
-	// 		return { ...state, count: 0 };
-	// 	case 'clearTitle':
-	// 		return { ...state, title: '' };
-	// 	default:
-	// 		throw new Error();
-	// }
-}
+							 areaSize,
+							 dotClick,
+							 dotIndex,
 
-function Dot({ gameSettings, areaSize }) {
-	const [dotState, changeDotState] = useReducer(dotStateReducer, initialDotState);
+							 gameData: {
+							 	missed,
+								 caught
+							 }
+						 }) {
 	const dotDynamicStyles = getDynamicDotStyles(areaSize)
 	const dotClassList = [
 		'dot',
-		dotState.isDotActive ? 'active' : '',
-		dotState.isDotCaught ? 'caught' : '',
-		dotState.isDotMissed ? 'missed' : '',
+		isActive ? 'active' : '',
+		caught.includes(dotIndex) ? 'caught' : '',
+		missed.includes(dotIndex) ? 'missed' : '',
 	].join(' ');
 
-	return <div className={dotClassList} style={dotDynamicStyles}/>
+
+	const click = () => {
+		if (isActive) {
+			dotClick(dotIndex)
+		}
+	}
+	return <div
+		onClick={isActive && !isCaught
+			? click
+			: () => {
+			}
+		}
+		className={dotClassList}
+		style={dotDynamicStyles}
+	>
+		{dotIndex}
+	</div>
 }
 
 export default connect(state => ({
-	gameSettings: state.gameSettings,
-	areaSize: state.gameMode.field
+	areaSize: state.gameMode.field,
+	gameData: state.gameData,
 }))(Dot);

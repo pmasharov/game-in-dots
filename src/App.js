@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 
 import './assets/styles/main.scss';
@@ -11,7 +11,9 @@ import {
 	setGameMode,
 	startGame,
 	stepGame,
-	stopGame
+	stopGame,
+	addToCaught,
+	addToMissed
 } from './store/actions';
 
 import { Area } from './components';
@@ -23,19 +25,31 @@ const App = ({
 							 gameMode,
 							 gameMode: {
 								 gameDuration,
-								 delay
+								 delay,
+								 field
 							 },
 							 gameStatus: {
 								 isGameStarted,
 								 timeRemaining,
+							 },
+							 gameData: {
+								 caught = [],
+								 miss = [],
 							 },
 							 onGetGameSettings,
 							 onChangeGameMode,
 							 onStartGame,
 							 onStepGame,
 							 onStopGame,
+							 onAddToCaught,
+							 onAddToMissed,
 						 }) => {
 	let interval;
+	const dotsAmount = field ? Math.pow(field, 2) : null
+
+	const [activeDotIndex, changeActiveDotIndex] = useState(getNextActiveDotIndex())
+	const [isCaught, changeIsCaught] = useState(false)
+
 	const changeGameMode = e => onChangeGameMode(gameSettings[e.target.value])
 
 	const setGameSettings = async () => {
@@ -52,14 +66,45 @@ const App = ({
 
 	const gameModeConstant = getGameModeValue({ modesObject: GAME_MODES, currentMode: gameMode })
 
+	function getRandomInt({ min, max }) {
+		min = Math.ceil(min);
+		max = Math.floor(max);
+		return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+	function getNextActiveDotIndex() {
+		return getRandomInt({
+			min: 0,
+			max: dotsAmount
+		})
+	}
+
+	const dotClick = dotIndex => {
+		changeIsCaught(true)
+		onAddToCaught(dotIndex)
+	}
+
 	useEffect(() => {
 		if (!Object.keys(gameSettings).length) setGameSettings()
 
+
 		if (isGameStarted) {
+			if (dotsAmount && activeDotIndex === null) {
+				changeActiveDotIndex(getNextActiveDotIndex())
+			}
 			interval = setInterval(() => {
 				const remaining = !timeRemaining
 					? gameDuration - delay
 					: timeRemaining - delay
+
+				if (!isCaught) {
+					onAddToMissed(activeDotIndex);
+				}
+
+				changeIsCaught(false)
+
+				changeActiveDotIndex(getNextActiveDotIndex())
+
 				onStepGame(remaining)
 			}, delay);
 
@@ -71,7 +116,7 @@ const App = ({
 			return () => clearInterval(interval);
 		}
 
-	}, [timeRemaining])
+	}, [timeRemaining, dotsAmount, isCaught])
 
 	return (
 		<>
@@ -80,17 +125,20 @@ const App = ({
 				<option value={GAME_MODES.NORMAL_MODE}>medium</option>
 				<option value={GAME_MODES.HARD_MODE}>hard</option>
 			</select>
-			<button
-				onClick={isGameStarted
-					? onStopGame
-					: onStartGame
-				}>
-				{isGameStarted
-					? 'stop'
-					: 'start'
-				}
+
+			<button onClick={isGameStarted ? onStopGame : onStartGame}>
+				{isGameStarted ? 'stop' : 'start'}
 			</button>
-			{Object.keys(gameMode).length && <Area isGameStarted={isGameStarted}/>}
+
+			{Object.keys(gameMode).length && (
+				<Area
+					dotClick={dotClick}
+					caughtList={caught}
+					missedList={miss}
+					isGameStarted={isGameStarted}
+					activeDotIndex={activeDotIndex}
+				/>
+			)}
 		</>
 	)
 }
@@ -99,6 +147,7 @@ const mapStateToProps = state => ({
 	gameSettings: state.gameSettings,
 	gameMode: state.gameMode,
 	gameStatus: state.gameStatus,
+	gameData: state.gameData,
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -116,6 +165,12 @@ const mapDispatchToProps = dispatch => ({
 	},
 	onStopGame: () => {
 		dispatch(stopGame());
+	},
+	onAddToCaught: (dotIndex) => {
+		dispatch(addToCaught(dotIndex));
+	},
+	onAddToMissed: (dotIndex) => {
+		dispatch(addToMissed(dotIndex));
 	},
 })
 

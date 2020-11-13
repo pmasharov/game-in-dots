@@ -4,6 +4,12 @@
   border: solid 1px $active-dot-color;
 
   &.active {
-    background: $active-dot-color;
+    background-color: cornflowerblue;
+  }
+  &.caught {
+    background-color: chartreuse;
+  }
+  &.missed {
+    background-color: indianred;
   }
 }
