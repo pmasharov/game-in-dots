@@ -4,8 +4,8 @@ export const getDotWidth = areaSize => {
 			return 50;
 		case 10:
 			return 40;
-		case 30:
-			return 20;
+		case 15:
+			return 30;
 		default:
 			return 50;
 	}

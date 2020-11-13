@@ -1,6 +1,6 @@
-import React, { useContext } from 'react';
+import React from 'react';
+import { connect } from 'react-redux';
 
-import AppContext from '../../context';
 import { getAreaDynamicStyles } from "../ComponentStyleHelpers"
 import { Dot } from '../index';
 
@@ -12,12 +12,10 @@ function createDotsList(size) {
 	return result;
 }
 
-function Area() {
-	const { areaSize } = useContext(AppContext);
+function Area({ areaSize }) {
 	const areaDynamicStyles = getAreaDynamicStyles(areaSize);
 
 	const dotsList = createDotsList(Math.pow(areaSize, 2));
-
 	return (
 		<div
 			className={'area'}
@@ -27,4 +25,6 @@ function Area() {
 	);
 }
 
-export default Area;
+export default connect(state => ({
+	areaSize: state.gameMode.field
+}))(Area);
