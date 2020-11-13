@@ -12,7 +12,11 @@ function createDotsList(size) {
 	return result;
 }
 
-function Area({ areaSize }) {
+function Area({
+								gameMode: {
+									field: areaSize,
+								},
+							}) {
 	const areaDynamicStyles = getAreaDynamicStyles(areaSize);
 
 	const dotsList = createDotsList(Math.pow(areaSize, 2));
@@ -26,5 +30,5 @@ function Area({ areaSize }) {
 }
 
 export default connect(state => ({
-	areaSize: state.gameMode.field
+	gameMode: state.gameMode,
 }))(Area);
