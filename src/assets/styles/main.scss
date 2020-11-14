@@ -1,4 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 @import "./variables";
 
 @import "Area";
 @import "Dot";
+@import "LeaderBoard";
+
+* {
+  font-family: 'Roboto', sans-serif;
+}

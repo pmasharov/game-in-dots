@@ -1,0 +1,23 @@
+.leader-board {
+  &__header {
+    color: gray;
+  }
+  &__content {
+    list-style: none;
+    padding: 0;
+
+    &-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-sizing: border-box;
+      height: 54px;
+      padding: 5px 10px;
+      margin: 3px 0;
+      background-color: $color-gray-middle;
+
+      color: $color-gray-dark;
+      font-size: 1.5rem;
+    }
+  }
+}

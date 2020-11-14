@@ -1,7 +1,7 @@
 .dot {
   background: transparent;
   box-sizing: border-box;
-  border: solid 1px $active-dot-color;
+  border: solid 1px $color-gray-light;
 
   &.active {
     background-color: cornflowerblue;

@@ -16,10 +16,10 @@ const LeaderBoard = () => {
     const leadersContent = !!leadersList.length && leadersList.map((leaderItem, index) => {
         const { winner, date } = leaderItem
         return (
-            <div key={index} className="leader-info-container">
-                {winner}
-                {date}
-            </div>
+            <li key={index} className="leader-board__content-item">
+                <span>{winner}</span>
+                <span>{date}</span>
+            </li>
         )
     })
     return (
@@ -27,9 +27,9 @@ const LeaderBoard = () => {
             <h1 className="leader-board__header">
                 Leader Board
             </h1>
-            <div className="leader-board__content">
+            <ul className="leader-board__content">
                 {leadersContent && leadersContent}
-            </div>
+            </ul>
         </div>
     )
 }
