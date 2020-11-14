@@ -1,4 +1,5 @@
-import Dot from './Dot/Dot'
 import Area from './Area/Area'
+import Dot from './Dot/Dot'
+import LeaderBoard from './LeaderBoard/LeaderBoard'
 
-export { Area, Dot }
+export { Dot, Area, LeaderBoard }
