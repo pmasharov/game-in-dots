@@ -7,13 +7,13 @@ import constants from "./constants/constants";
 import api from './api';
 
 import {
-	setGameSettings,
-	setGameMode,
-	startGame,
-	stepGame,
-	stopGame,
-	addToCaught,
-	addToMissed
+    setGameSettings,
+    setGameMode,
+    startGame,
+    stepGame,
+    stopGame,
+    addToCaught,
+    addToMissed
 } from './store/actions';
 
 import { Area } from './components';
@@ -21,157 +21,172 @@ import { Area } from './components';
 const { GAME_MODES } = constants
 
 const App = ({
-							 gameSettings,
-							 gameMode,
-							 gameMode: {
-								 gameDuration,
-								 delay,
-								 field
-							 },
-							 gameStatus: {
-								 isGameStarted,
-								 timeRemaining,
-							 },
-							 gameData: {
-								 caught = [],
-								 miss = [],
-							 },
-							 onGetGameSettings,
-							 onChangeGameMode,
-							 onStartGame,
-							 onStepGame,
-							 onStopGame,
-							 onAddToCaught,
-							 onAddToMissed,
-						 }) => {
-	let interval;
-	const dotsAmount = field ? Math.pow(field, 2) : null
+                 gameSettings,
+                 gameMode,
+                 gameMode: {
+                     gameDuration,
+                     delay,
+                     field
+                 },
+                 gameStatus: {
+                     isGameStarted,
+                     timeRemaining,
+                 },
+                 gameData: {
+                     caught = [],
+                     missed = [],
+                 },
+                 onGetGameSettings,
+                 onChangeGameMode,
+                 onStartGame,
+                 onStepGame,
+                 onStopGame,
+                 onAddToCaught,
+                 onAddToMissed,
+             }) => {
+    const dotsAmount = field ? Math.pow(field, 2) : null
 
-	const [activeDotIndex, changeActiveDotIndex] = useState(getNextActiveDotIndex())
-	const [isCaught, changeIsCaught] = useState(false)
+    let interval;
 
-	const changeGameMode = e => onChangeGameMode(gameSettings[e.target.value])
+    const [activeDotIndex, changeActiveDotIndex] = useState(getNextActiveDotIndex())
+    const [isCaught, changeIsCaught] = useState(false)
 
-	const setGameSettings = async () => {
-		const gameSettings = await api.getGameSettings()
-		onGetGameSettings(gameSettings)
-		onChangeGameMode(gameSettings[GAME_MODES.EASE_MODE])
-	}
+    const changeGameMode = e => {
+        return onChangeGameMode(gameSettings[e.target.value])
+    }
 
-	const getGameModeValue = ({ modesObject, currentMode }) => {
-		return Object
-			.keys(modesObject)
-			.find(key => GAME_MODES[key] === currentMode)
-	}
+    const setGameSettings = async () => {
+        const gameSettings = await api.getGameSettings()
+        onGetGameSettings(gameSettings)
+        onChangeGameMode(gameSettings[GAME_MODES.EASE_MODE])
+    }
 
-	const gameModeConstant = getGameModeValue({ modesObject: GAME_MODES, currentMode: gameMode })
+    const getGameModeValue = ({ modesObject, currentMode }) => {
+        return Object
+            .keys(modesObject)
+            .find(key => GAME_MODES[key] === currentMode)
+    }
 
-	function getRandomInt({ min, max }) {
-		min = Math.ceil(min);
-		max = Math.floor(max);
-		return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+    const gameModeConstant = getGameModeValue({ modesObject: GAME_MODES, currentMode: gameMode })
 
-	function getNextActiveDotIndex() {
-		return getRandomInt({
-			min: 0,
-			max: dotsAmount
-		})
-	}
+    function getRandomInt({ min, max, caught, missed }) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
 
-	const dotClick = dotIndex => {
-		changeIsCaught(true)
-		onAddToCaught(dotIndex)
-	}
+        let newDotIndex = Math.floor(Math.random() * (max - min + 1)) + min;
 
-	useEffect(() => {
-		if (!Object.keys(gameSettings).length) setGameSettings()
+        if (caught && missed) {
+            while (caught.includes(newDotIndex) || missed.includes(newDotIndex)) {
+                newDotIndex = Math.floor(Math.random() * (max - min + 1)) + min;
+            }
+        }
+        return newDotIndex;
+    }
 
+    function getNextActiveDotIndex(caught, missed) {
+        return getRandomInt({
+            min: 0,
+            max: dotsAmount - 1,
+            caught: caught,
+            missed: missed,
+        })
+    }
 
-		if (isGameStarted) {
-			if (dotsAmount && activeDotIndex === null) {
-				changeActiveDotIndex(getNextActiveDotIndex())
-			}
-			interval = setInterval(() => {
-				const remaining = !timeRemaining
-					? gameDuration - delay
-					: timeRemaining - delay
+    const dotClick = dotIndex => {
+        changeIsCaught(true)
+        onAddToCaught(dotIndex)
+    }
 
-				if (!isCaught) {
-					onAddToMissed(activeDotIndex);
-				}
+    useEffect(() => {
+        if (!Object.keys(gameSettings).length) setGameSettings()
+    })
 
-				changeIsCaught(false)
+    useEffect(() => {
+        if (isGameStarted) {
 
-				changeActiveDotIndex(getNextActiveDotIndex())
+            if (dotsAmount && activeDotIndex === null) {
+                changeActiveDotIndex(getNextActiveDotIndex())
+            }
+            interval = setInterval(() => {
+                const remaining = !timeRemaining
+                    ? gameDuration - delay
+                    : timeRemaining - delay
 
-				onStepGame(remaining)
-			}, delay);
+                if (!isCaught) {
+                    onAddToMissed(activeDotIndex);
+                }
 
-			if (timeRemaining === 0) {
-				onStopGame()
-				clearInterval(interval)
-			}
+                changeIsCaught(false)
 
-			return () => clearInterval(interval);
-		}
+                changeActiveDotIndex(getNextActiveDotIndex(caught, missed))
 
-	}, [timeRemaining, dotsAmount, isCaught])
+                onStepGame(remaining)
+            }, delay);
 
-	return (
-		<>
-			<select value={gameModeConstant} onChange={changeGameMode}>
-				<option value={GAME_MODES.EASE_MODE}>easy</option>
-				<option value={GAME_MODES.NORMAL_MODE}>medium</option>
-				<option value={GAME_MODES.HARD_MODE}>hard</option>
-			</select>
+            if (timeRemaining === 0
+                || [...caught, ...missed].length === dotsAmount) {
+                onStopGame()
+                clearInterval(interval)
+            }
 
-			<button onClick={isGameStarted ? onStopGame : onStartGame}>
-				{isGameStarted ? 'stop' : 'start'}
-			</button>
+            return () => clearInterval(interval);
+        }
+    }, [timeRemaining, dotsAmount, isCaught])
 
-			{Object.keys(gameMode).length && (
-				<Area
-					dotClick={dotClick}
-					caughtList={caught}
-					missedList={miss}
-					isGameStarted={isGameStarted}
-					activeDotIndex={activeDotIndex}
-				/>
-			)}
-		</>
-	)
+    return (
+        <>
+            <select value={gameModeConstant} onChange={changeGameMode}>
+                <option value={GAME_MODES.EASE_MODE}>easy</option>
+                <option value={GAME_MODES.NORMAL_MODE}>medium</option>
+                <option value={GAME_MODES.HARD_MODE}>hard</option>
+            </select>
+
+            <button onClick={isGameStarted ? onStopGame : onStartGame}>
+                {isGameStarted ? 'stop' : 'start'}
+            </button>
+
+            {Object.keys(gameMode).length && (
+                <Area
+                    dotClick={dotClick}
+                    caughtList={caught}
+                    missedList={missed}
+                    isGameStarted={isGameStarted}
+                    activeDotIndex={activeDotIndex}
+                />
+            )}
+        </>
+    )
 }
 
 const mapStateToProps = state => ({
-	gameSettings: state.gameSettings,
-	gameMode: state.gameMode,
-	gameStatus: state.gameStatus,
-	gameData: state.gameData,
+    gameSettings: state.gameSettings,
+    gameMode: state.gameMode,
+    gameStatus: state.gameStatus,
+    gameData: state.gameData,
 })
 
 const mapDispatchToProps = dispatch => ({
-	onGetGameSettings: gameSettings => {
-		dispatch(setGameSettings(gameSettings));
-	},
-	onChangeGameMode: gameMode => {
-		dispatch(setGameMode(gameMode));
-	},
-	onStartGame: () => {
-		dispatch(startGame());
-	},
-	onStepGame: (remaining) => {
-		dispatch(stepGame(remaining));
-	},
-	onStopGame: () => {
-		dispatch(stopGame());
-	},
-	onAddToCaught: (dotIndex) => {
-		dispatch(addToCaught(dotIndex));
-	},
-	onAddToMissed: (dotIndex) => {
-		dispatch(addToMissed(dotIndex));
-	},
+    onGetGameSettings: gameSettings => {
+        dispatch(setGameSettings(gameSettings));
+    },
+    onChangeGameMode: gameMode => {
+        dispatch(setGameMode(gameMode));
+    },
+    onStartGame: () => {
+        dispatch(startGame());
+    },
+    onStepGame: (remaining) => {
+        dispatch(stepGame(remaining));
+    },
+    onStopGame: () => {
+        dispatch(stopGame());
+    },
+    onAddToCaught: (dotIndex) => {
+        dispatch(addToCaught(dotIndex));
+    },
+    onAddToMissed: (dotIndex) => {
+        dispatch(addToMissed(dotIndex));
+    },
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
