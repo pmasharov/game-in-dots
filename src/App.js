@@ -16,13 +16,12 @@ import {
   addToMissed
 } from './store/actions';
 
-import { Area, LeaderBoard } from './components';
+import { GameBoard, LeaderBoard } from './components';
 
 const { GAME_MODES } = constants
 
 const App = ({
                gameSettings,
-               gameMode,
                gameMode: {
                  gameDuration,
                  delay,
@@ -51,9 +50,9 @@ const App = ({
   const [activeDotIndex, changeActiveDotIndex] = useState(getNextActiveDotIndex())
   const [isCaught, changeIsCaught] = useState(false)
 
-  const changeGameMode = e => {
-    return onChangeGameMode(gameSettings[e.target.value])
-  }
+  // const changeGameMode = e => {
+  //   return onChangeGameMode(gameSettings[e.target.value])
+  // }
 
   const setGameSettings = async () => {
     const gameSettings = await api.getGameSettings()
@@ -61,13 +60,13 @@ const App = ({
     onChangeGameMode(gameSettings[GAME_MODES.EASE_MODE])
   }
 
-  const getGameModeValue = ({ modesObject, currentMode }) => {
-    return Object
-      .keys(modesObject)
-      .find(key => GAME_MODES[key] === currentMode)
-  }
-
-  const gameModeConstant = getGameModeValue({ modesObject: GAME_MODES, currentMode: gameMode })
+  // const getGameModeValue = ({ modesObject, currentMode }) => {
+  //   return Object
+  //     .keys(modesObject)
+  //     .find(key => GAME_MODES[key] === currentMode)
+  // }
+  //
+  // const gameModeConstant = getGameModeValue({ modesObject: GAME_MODES, currentMode: gameMode })
 
   function getRandomInt({ min, max, caught, missed }) {
     min = Math.ceil(min);
@@ -135,30 +134,10 @@ const App = ({
 
   return (
     <>
-      <select value={gameModeConstant} onChange={changeGameMode}>
-        <option value={GAME_MODES.EASE_MODE}>easy</option>
-        <option value={GAME_MODES.NORMAL_MODE}>medium</option>
-        <option value={GAME_MODES.HARD_MODE}>hard</option>
-      </select>
-
-      <button onClick={isGameStarted ? onStopGame : onStartGame}>
-        {isGameStarted ? 'stop' : 'start'}
-      </button>
-
-      {
-        !!Object.keys(gameMode).length ? (
-            <Area
-              dotClick={dotClick}
-              caughtList={caught}
-              missedList={missed}
-              isGameStarted={isGameStarted}
-              activeDotIndex={activeDotIndex}
-            />
-          )
-          : null
-      }
-
-      <LeaderBoard/>
+      <div className='wrapper'>
+        <GameBoard dotClick={dotClick} activeDotIndex={activeDotIndex}/>
+        <LeaderBoard/>
+      </div>
     </>
   )
 }
