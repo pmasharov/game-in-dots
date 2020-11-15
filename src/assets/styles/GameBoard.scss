@@ -1,5 +1,20 @@
 .game-wrapper {
+  justify-content: center;
   & .controls-wrapper {
     display: flex;
+    justify-content: space-between;
+  }
+  & .result-message-wrapper {
+    display: flex;
+    justify-content: center;
+    min-height: 70px;
+
+    & .result-message {
+      color: $color-gray-dark;
+      font-size: 1.5rem;
+    }
+  }
+  & .item {
+    margin: 5px;
   }
 }

@@ -3,8 +3,14 @@
   box-sizing: border-box;
   border: solid 1px $color-gray-light;
 
+  transition-duration: $transition-duration;
+
   &.active {
     background-color: $color-accent;
+
+    &:active {
+      transform: scale(0.95);
+    }
   }
   &.caught {
     background-color: $color-accept;

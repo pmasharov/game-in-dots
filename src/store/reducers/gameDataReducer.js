@@ -17,6 +17,8 @@ export function gameDataReducer(state = initialState, action) {
 				...state,
 				missed: [...state.missed, action.payload]
 			}
+			case types.CLEAR_DATA:
+			return initialState
 		default:
 			return state;
 	}

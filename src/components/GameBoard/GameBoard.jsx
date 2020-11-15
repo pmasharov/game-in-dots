@@ -5,7 +5,8 @@ import constants from "../../constants/constants";
 import {
   setGameMode,
   startGame,
-  stopGame
+  stopGame,
+  clearData,
 } from "../../store/actions";
 
 import { Area } from "../../components";
@@ -16,8 +17,12 @@ const { GAME_MODES } = constants
 const GameBoard = ({
                      gameSettings,
                      gameMode,
+                     gameMode: {
+                       field
+                     },
                      gameStatus: {
-                       isGameStarted
+                       isGameStarted,
+                       isGameEnded
                      },
                      gameData: {
                        caught,
@@ -26,33 +31,40 @@ const GameBoard = ({
                      activeDotIndex,
 
                      dotClick,
-                     onStopGame,
                      onStartGame,
+                     onClearData,
                      onChangeGameMode,
                    }) => {
-  const [name, changeName] = useState('')
 
-  const changeGameMode = e => {
+  const [name, changeName] = useState('')
+  const [gameModeKey, changeGameModeKey] = useState(GAME_MODES.DEFAULT_MODE)
+  const isDataEmpty = !(caught.length > 0 || missed.length > 0)
+  const isGameModeChoose = gameModeKey !== GAME_MODES.DEFAULT_MODE
+
+  const handleChangeGameMode = e => {
+    onClearData()
+    changeGameModeKey(e.target.value)
     return onChangeGameMode(gameSettings[e.target.value])
   }
 
-  // const getGameModeValue = ({ modesObject, pickedMode }) => {
-  //   return Object
-  //     .keys(modesObject)
-  //     .find(key => GAME_MODES[key] === pickedMode)
-  // }
+  const isStartAvailable = gameModeKey
+    && gameModeKey !== GAME_MODES.DEFAULT_MODE
+    && name.length > 0
+    && !isGameStarted
 
-  // const gameModeConstant = getGameModeValue({ modesObject: GAME_MODES, pickedMode: gameMode })
-  // const isStartAvailable = gameModeConstant && name.length > 0
-  const isStartAvailable = true
+  const start = () => {
+    onClearData()
+    onStartGame()
+  }
+
   return (
     <section className='game-wrapper'>
       <section className="controls-wrapper">
         <select
-          className={'field'}
-          defaultValue={GAME_MODES.DEFAULT_MODE}
-          // value={gameModeConstant}
-          onChange={changeGameMode}
+          className={'field item'}
+          value={gameModeKey}
+          onChange={handleChangeGameMode}
+          disabled={isGameStarted}
         >
           <option disabled value={GAME_MODES.DEFAULT_MODE}>Pick game mode</option>
           <option value={GAME_MODES.EASE_MODE}>easy</option>
@@ -62,22 +74,32 @@ const GameBoard = ({
 
         <input
           type={'text'}
-          className={'field'}
+          className={'field item'}
           value={name}
           onChange={e => changeName(e.target.value)}
+          disabled={isGameStarted}
         />
 
         <button
-          // disabled={isStartAvailable}
-          className={`button ${isStartAvailable ? 'enabled' : 'disabled'}`}
-          onClick={/*isStartAvailable ? */onStartGame/* : () => {
-        }*/}
+          className={`button ${isStartAvailable ? 'enabled' : 'disabled'} item`}
+          onClick={isStartAvailable ? start : () => {
+          }}
         >
-          {isGameStarted ? 'stop' : 'play'}
+          {!isGameEnded ? 'play' : ' play again'}
         </button>
       </section>
-      {
-        !!Object.keys(gameMode).length ? (
+      {isGameModeChoose && (
+        <>
+        <section className="result-message-wrapper item">
+          {
+            isGameEnded && !isDataEmpty && (
+              <h2 className='result-message'>
+                {`${caught.length > missed.length ? name : 'Computer'} won`}
+              </h2>
+            )
+          }
+        </section>
+          <section className='item'>
             <Area
               dotClick={dotClick}
               caughtList={caught}
@@ -85,9 +107,9 @@ const GameBoard = ({
               isGameStarted={isGameStarted}
               activeDotIndex={activeDotIndex}
             />
-          )
-          : null
-      }
+          </section>
+        </>
+      )}
     </section>
   )
 }
@@ -108,6 +130,9 @@ const mapDispatchToProps = dispatch => ({
   },
   onStopGame: () => {
     dispatch(stopGame());
+  },
+  onClearData: () => {
+    dispatch(clearData());
   }
 })
 

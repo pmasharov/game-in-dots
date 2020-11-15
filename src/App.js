@@ -13,7 +13,7 @@ import {
   stepGame,
   stopGame,
   addToCaught,
-  addToMissed
+  addToMissed,
 } from './store/actions';
 
 import { GameBoard, LeaderBoard } from './components';
@@ -49,7 +49,6 @@ const App = ({
   let interval;
 
   const [activeDotIndex, changeActiveDotIndex] = useState(getNextActiveDotIndex())
-  const [isCaught, changeIsCaught] = useState(false)
 
   const setGameSettings = async () => {
     const gameSettings = await api.getGameSettings()
@@ -81,7 +80,6 @@ const App = ({
   }
 
   const dotClick = dotIndex => {
-    changeIsCaught(true)
     onAddToCaught(dotIndex)
   }
 
@@ -100,16 +98,14 @@ const App = ({
           ? gameDuration - delay
           : timeRemaining - delay
 
-        if (!isCaught) {
+        if (!caught.includes(activeDotIndex)) {
           onAddToMissed(activeDotIndex);
         }
-
-        changeIsCaught(false)
 
         changeActiveDotIndex(getNextActiveDotIndex(caught, missed))
 
         onStepGame(remaining)
-      }, delay);
+      }, 300);
 
       if (timeRemaining === 0
         || [...caught, ...missed].length === dotsAmount
@@ -121,7 +117,7 @@ const App = ({
 
       return () => clearInterval(interval);
     }
-  }, [timeRemaining, dotsAmount, isCaught])
+  }, [timeRemaining, dotsAmount, caught, missed])
 
   return (
     <>
@@ -161,6 +157,9 @@ const mapDispatchToProps = dispatch => ({
   },
   onAddToMissed: (dotIndex) => {
     dispatch(addToMissed(dotIndex));
+  },
+  onClearLists: () => {
+    dispatch(clearLists());
   },
 })
 

@@ -10,6 +10,7 @@ export function gameStatusReducer(state = initialState, action) {
 		case types.START_GAME:
 			return {
 				isGameStarted: true,
+				isGameEnded: false,
 			}
 		case types.STEP_GAME:
 			return {
@@ -19,6 +20,7 @@ export function gameStatusReducer(state = initialState, action) {
 		case types.STOP_GAME:
 			return {
 				isGameStarted: false,
+				isGameEnded: true,
 				timeRemaining: null
 			}
 		default:

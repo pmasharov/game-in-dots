@@ -1,6 +1,7 @@
 export const types = {
 	ADD_TO_CAUGHT: 'ADD_TO_CAUGHT',
 	ADD_TO_MISSED: 'ADD_TO_MISSED',
+	CLEAR_DATA: 'CLEAR_DATA',
 };
 
 function addToCaught(dotIndex) {
@@ -15,8 +16,14 @@ function addToMissed(dotIndex) {
 		payload: dotIndex,
 	};
 }
+function clearData() {
+	return {
+		type: types.CLEAR_DATA,
+	};
+}
 
 export {
 	addToCaught,
 	addToMissed,
+	clearData,
 };
