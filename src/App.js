@@ -35,38 +35,27 @@ const App = ({
                  caught = [],
                  missed = [],
                },
+
                onGetGameSettings,
                onChangeGameMode,
-               onStartGame,
                onStepGame,
                onStopGame,
                onAddToCaught,
                onAddToMissed,
              }) => {
   const dotsAmount = field ? Math.pow(field, 2) : null
+  const dotIndexesAmount = dotsAmount - 1
 
   let interval;
 
   const [activeDotIndex, changeActiveDotIndex] = useState(getNextActiveDotIndex())
   const [isCaught, changeIsCaught] = useState(false)
 
-  // const changeGameMode = e => {
-  //   return onChangeGameMode(gameSettings[e.target.value])
-  // }
-
   const setGameSettings = async () => {
     const gameSettings = await api.getGameSettings()
     onGetGameSettings(gameSettings)
-    onChangeGameMode(gameSettings[GAME_MODES.EASE_MODE])
+    onChangeGameMode(gameSettings[GAME_MODES.DEFAULT_MODE])
   }
-
-  // const getGameModeValue = ({ modesObject, currentMode }) => {
-  //   return Object
-  //     .keys(modesObject)
-  //     .find(key => GAME_MODES[key] === currentMode)
-  // }
-  //
-  // const gameModeConstant = getGameModeValue({ modesObject: GAME_MODES, currentMode: gameMode })
 
   function getRandomInt({ min, max, caught, missed }) {
     min = Math.ceil(min);
@@ -85,7 +74,7 @@ const App = ({
   function getNextActiveDotIndex(caught, missed) {
     return getRandomInt({
       min: 0,
-      max: dotsAmount - 1,
+      max: dotIndexesAmount,
       caught: caught,
       missed: missed,
     })
@@ -123,7 +112,9 @@ const App = ({
       }, delay);
 
       if (timeRemaining === 0
-        || [...caught, ...missed].length === dotsAmount) {
+        || [...caught, ...missed].length === dotsAmount
+        || caught.length > dotIndexesAmount / 2
+        || missed.length > dotIndexesAmount / 2) {
         onStopGame()
         clearInterval(interval)
       }

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { connect } from "react-redux";
 
 import constants from "../../constants/constants";
@@ -30,30 +30,52 @@ const GameBoard = ({
                      onStartGame,
                      onChangeGameMode,
                    }) => {
+  const [name, changeName] = useState('')
+
   const changeGameMode = e => {
     return onChangeGameMode(gameSettings[e.target.value])
   }
 
-  const getGameModeValue = ({ modesObject, currentMode }) => {
-    return Object
-      .keys(modesObject)
-      .find(key => GAME_MODES[key] === currentMode)
-  }
+  // const getGameModeValue = ({ modesObject, pickedMode }) => {
+  //   return Object
+  //     .keys(modesObject)
+  //     .find(key => GAME_MODES[key] === pickedMode)
+  // }
 
-  const gameModeConstant = getGameModeValue({ modesObject: GAME_MODES, currentMode: gameMode })
-
+  // const gameModeConstant = getGameModeValue({ modesObject: GAME_MODES, pickedMode: gameMode })
+  // const isStartAvailable = gameModeConstant && name.length > 0
+  const isStartAvailable = true
   return (
-    <div className='game-wrapper'>
-      <select value={gameModeConstant} onChange={changeGameMode}>
-        <option value={GAME_MODES.EASE_MODE}>easy</option>
-        <option value={GAME_MODES.NORMAL_MODE}>medium</option>
-        <option value={GAME_MODES.HARD_MODE}>hard</option>
-      </select>
+    <section className='game-wrapper'>
+      <section className="controls-wrapper">
+        <select
+          className={'field'}
+          defaultValue={GAME_MODES.DEFAULT_MODE}
+          // value={gameModeConstant}
+          onChange={changeGameMode}
+        >
+          <option disabled value={GAME_MODES.DEFAULT_MODE}>Pick game mode</option>
+          <option value={GAME_MODES.EASE_MODE}>easy</option>
+          <option value={GAME_MODES.NORMAL_MODE}>medium</option>
+          <option value={GAME_MODES.HARD_MODE}>hard</option>
+        </select>
 
-      <button onClick={isGameStarted ? onStopGame : onStartGame}>
-        {isGameStarted ? 'stop' : 'start'}
-      </button>
+        <input
+          type={'text'}
+          className={'field'}
+          value={name}
+          onChange={e => changeName(e.target.value)}
+        />
 
+        <button
+          // disabled={isStartAvailable}
+          className={`button ${isStartAvailable ? 'enabled' : 'disabled'}`}
+          onClick={/*isStartAvailable ? */onStartGame/* : () => {
+        }*/}
+        >
+          {isGameStarted ? 'stop' : 'play'}
+        </button>
+      </section>
       {
         !!Object.keys(gameMode).length ? (
             <Area
@@ -66,7 +88,7 @@ const GameBoard = ({
           )
           : null
       }
-    </div>
+    </section>
   )
 }
 

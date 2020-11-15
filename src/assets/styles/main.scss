@@ -1,6 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 @import "./variables";
 
+@import "Button";
+@import "Field";
+
+@import "GameBoard";
 @import "Area";
 @import "Dot";
 @import "LeaderBoard";

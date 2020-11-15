@@ -4,12 +4,12 @@
   border: solid 1px $color-gray-light;
 
   &.active {
-    background-color: cornflowerblue;
+    background-color: $color-accent;
   }
   &.caught {
-    background-color: chartreuse;
+    background-color: $color-accept;
   }
   &.missed {
-    background-color: indianred;
+    background-color: $color-error;
   }
 }
