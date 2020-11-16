@@ -3,13 +3,14 @@
   box-sizing: border-box;
   border: solid 1px $color-gray-light;
 
-  transition-duration: $transition-duration;
 
   &.active {
+    transition-duration: $transition-duration;
     background-color: $color-accent;
+    cursor: pointer;
 
     &:active {
-      transform: scale(0.95);
+      transform: scale(0.93);
     }
   }
   &.caught {

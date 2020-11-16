@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 
 import api from '../../api'
@@ -15,7 +15,7 @@ const LeaderBoard = ({
   useEffect(() => {
     getLeadersData()
   }, [])
-console.log('leadersData -> LeaderBoard -> : leadersData', leadersData);
+
   const leadersContent = leadersData && !!leadersData.length && leadersData.map((leaderItem, index) => {
     const { winner, date } = leaderItem
     return (
@@ -37,7 +37,7 @@ console.log('leadersData -> LeaderBoard -> : leadersData', leadersData);
           {leadersContent && leadersContent}
         </ul>
       </div>}
-      </>
+    </>
   )
 }
 

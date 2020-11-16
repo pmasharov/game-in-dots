@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import moment from 'moment';
 
 import './assets/styles/main.scss';
 
@@ -18,7 +17,6 @@ import {
 } from './store/actions';
 
 import { GameBoard, LeaderBoard } from './components';
-import { dispatch } from "./store/store";
 
 const { GAME_MODES } = constants
 
@@ -45,11 +43,12 @@ const App = ({
                onStopGame,
                onAddToCaught,
                onAddToMissed,
-
-               dispatch,
              }) => {
   const dotsAmount = field ? Math.pow(field, 2) : null
   const dotIndexesAmount = dotsAmount - 1
+  const somebodyWon = caught.length > dotIndexesAmount / 2
+    || missed.length > dotIndexesAmount / 2
+  const timeEnded = timeRemaining === 0
 
   let interval;
 
@@ -112,9 +111,8 @@ const App = ({
         onStepGame(remaining)
       }, delay);
 
-      if (timeRemaining === 0
-        || caught.length > dotIndexesAmount / 2
-        || missed.length > dotIndexesAmount / 2) {
+      if (timeEnded
+        || somebodyWon) {
         clearInterval(interval)
         onStopGame(name)
       }

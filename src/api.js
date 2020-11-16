@@ -25,7 +25,7 @@ const api = {
     try {
       const leadersDataResp = await axios.get(pointsSrc.leadersData)
       if (leadersDataResp.status === 200) {
-        dispatch(getLeadersData(leadersDataResp.data))
+        dispatch(getLeadersData(leadersDataResp.data.reverse()))
       } else {
         throw new Error('Something wrong on the server')
       }
