@@ -82,6 +82,7 @@ const GameBoard = ({
 
         <input
           type={'text'}
+          placeholder={'Type your name'}
           className={'field item'}
           value={name}
           onChange={handleChangeName}

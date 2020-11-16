@@ -1,5 +1,12 @@
 .leader-board {
   width: 45%;
+  @media all and (max-width: $lg) {
+    width: 50%;
+    margin: 3rem auto 0;
+  }
+  @media all and (max-width: $md) {
+    width: 75%;
+  }
 
   &__header-wrapper {
     display: flex;
@@ -14,10 +21,25 @@
       align-items: center;
       color: $color-gray-dark;
 
+      @media all and (max-width: $md) {
+        font-size: 1rem;
+      }
+      @media all and (max-width: $sm) {
+        font-size: .8rem;
+      }
+
       & .collapse-control {
         color: $color-accent;
         font-size: .8rem;
         cursor: pointer;
+        text-align: right;
+
+        @media all and (max-width: $md) {
+          font-size: .8rem;
+        }
+        @media all and (max-width: $sm) {
+          font-size: .7rem;
+        }
       }
     }
 
@@ -39,6 +61,14 @@
 
       color: $color-gray-dark;
       font-size: 1.5rem;
+
+      @media all and (max-width: $sm) {
+        font-size: .9rem;
+      }
+      @media all and (max-width: $xs) {
+        font-size: .7rem;
+      }
     }
   }
 }
+

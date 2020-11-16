@@ -3,6 +3,14 @@
   & .controls-wrapper {
     display: flex;
     justify-content: space-between;
+
+    @media all and (max-width: $lg) {
+      max-width: 75%;
+      margin: auto;
+    }
+    @media all and (max-width: $md) {
+      flex-direction: column;
+    }
   }
   & .result-message-wrapper {
     display: flex;

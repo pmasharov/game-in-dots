@@ -17,3 +17,9 @@
   display: flex;
   justify-content: space-around;
 }
+
+@media all and (max-width: $lg) {
+  .wrapper {
+    flex-direction: column;
+  }
+}

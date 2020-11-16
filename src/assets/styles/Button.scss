@@ -23,4 +23,11 @@
   &.disabled {
     background-color: $color-gray-light;
   }
+
+  @media all and (max-width: $md) {
+    font-size: 1rem;
+  }
+  @media all and (max-width: $sm) {
+    font-size: .8rem;
+  }
 }
