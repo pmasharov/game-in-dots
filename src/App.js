@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { connect } from 'react-redux';
 
 import './assets/styles/main.scss';
@@ -46,11 +46,11 @@ const App = ({
              }) => {
   const dotsAmount = field ? Math.pow(field, 2) : null
   const dotIndexesAmount = dotsAmount - 1
+  const computerWon = missed.length > dotIndexesAmount / 2
   const somebodyWon = caught.length > dotIndexesAmount / 2
     || missed.length > dotIndexesAmount / 2
-  const timeEnded = timeRemaining === 0
 
-  let interval;
+  const intervalRef = useRef(null);
 
   const [activeDotIndex, changeActiveDotIndex] = useState(getNextActiveDotIndex())
 
@@ -92,6 +92,7 @@ const App = ({
   }, [])
 
   useEffect(() => {
+    let interval = intervalRef.current
     if (isGameStarted) {
 
       if (dotsAmount && activeDotIndex === null) {
@@ -109,12 +110,11 @@ const App = ({
         changeActiveDotIndex(getNextActiveDotIndex(caught, missed))
 
         onStepGame(remaining)
-      }, delay);
+      }, 700);
 
-      if (timeEnded
-        || somebodyWon) {
+      if (somebodyWon) {
         clearInterval(interval)
-        onStopGame(name)
+        onStopGame(computerWon ? 'computer' : name)
       }
 
       return () => clearInterval(interval);

@@ -37,6 +37,7 @@ const GameBoard = ({
                    }) => {
 
   const [name, changeName] = useState('')
+  const [isNameChanged, changeIsNameChanged] = useState(false)
   const [gameModeKey, changeGameModeKey] = useState(GAME_MODES.DEFAULT_MODE)
   const isDataEmpty = !(caught.length > 0 || missed.length > 0)
   const isGameModeChoose = gameModeKey !== GAME_MODES.DEFAULT_MODE
@@ -45,6 +46,11 @@ const GameBoard = ({
     onClearDots()
     changeGameModeKey(e.target.value)
     return onChangeGameMode(gameSettings[e.target.value])
+  }
+
+  const handleChangeName = e => {
+    changeIsNameChanged(true)
+    changeName(e.target.value)
   }
 
   const isStartAvailable = gameModeKey
@@ -56,6 +62,7 @@ const GameBoard = ({
     onClearDots()
     onSetUserName(name)
     onStartGame()
+    changeIsNameChanged(false)
   }
 
   return (
@@ -77,7 +84,7 @@ const GameBoard = ({
           type={'text'}
           className={'field item'}
           value={name}
-          onChange={e => changeName(e.target.value)}
+          onChange={handleChangeName}
           disabled={isGameStarted}
         />
 
@@ -93,7 +100,7 @@ const GameBoard = ({
         <>
           <section className="result-message-wrapper item">
             {
-              isGameEnded && !isDataEmpty && (
+              isGameEnded && !isNameChanged && !isDataEmpty && (
                 <h2 className='result-message'>
                   {`${caught.length > missed.length ? name : 'Computer'} won`}
                 </h2>
