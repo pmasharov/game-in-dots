@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
+import moment from 'moment';
 
 import './assets/styles/main.scss';
 
@@ -17,6 +18,7 @@ import {
 } from './store/actions';
 
 import { GameBoard, LeaderBoard } from './components';
+import { dispatch } from "./store/store";
 
 const { GAME_MODES } = constants
 
@@ -34,6 +36,7 @@ const App = ({
                gameData: {
                  caught = [],
                  missed = [],
+                 name
                },
 
                onGetGameSettings,
@@ -42,6 +45,8 @@ const App = ({
                onStopGame,
                onAddToCaught,
                onAddToMissed,
+
+               dispatch,
              }) => {
   const dotsAmount = field ? Math.pow(field, 2) : null
   const dotIndexesAmount = dotsAmount - 1
@@ -105,14 +110,13 @@ const App = ({
         changeActiveDotIndex(getNextActiveDotIndex(caught, missed))
 
         onStepGame(remaining)
-      }, 300);
+      }, delay);
 
       if (timeRemaining === 0
-        || [...caught, ...missed].length === dotsAmount
         || caught.length > dotIndexesAmount / 2
         || missed.length > dotIndexesAmount / 2) {
-        onStopGame()
         clearInterval(interval)
+        onStopGame(name)
       }
 
       return () => clearInterval(interval);
@@ -149,18 +153,15 @@ const mapDispatchToProps = dispatch => ({
   onStepGame: (remaining) => {
     dispatch(stepGame(remaining));
   },
-  onStopGame: () => {
-    dispatch(stopGame());
+  onStopGame: name => {
+    dispatch(stopGame(name));
   },
   onAddToCaught: (dotIndex) => {
     dispatch(addToCaught(dotIndex));
   },
   onAddToMissed: (dotIndex) => {
     dispatch(addToMissed(dotIndex));
-  },
-  onClearLists: () => {
-    dispatch(clearLists());
-  },
+  }
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

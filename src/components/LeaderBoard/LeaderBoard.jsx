@@ -1,19 +1,22 @@
 import React, { useEffect, useState } from 'react'
+import { connect } from 'react-redux'
+
 import api from '../../api'
 
-const LeaderBoard = () => {
-  const [leadersList, changeLeadersList] = useState([])
-
+const LeaderBoard = ({
+                       leadersData,
+                       dispatch,
+                     }) => {
   const getLeadersData = async () => {
-    const leadersData = await api.getLeadersData()
-    changeLeadersList(leadersData)
+    const leadersData = await api.getLeadersData(dispatch)
+    return leadersData
   }
 
   useEffect(() => {
     getLeadersData()
   }, [])
-
-  const leadersContent = !!leadersList.length && leadersList.map((leaderItem, index) => {
+console.log('leadersData -> LeaderBoard -> : leadersData', leadersData);
+  const leadersContent = leadersData && !!leadersData.length && leadersData.map((leaderItem, index) => {
     const { winner, date } = leaderItem
     return (
       <li key={index} className="leader-board__content-item">
@@ -23,17 +26,21 @@ const LeaderBoard = () => {
     )
   })
   return (
-    <div className="leader-board">
-      <section className="leader-board__header-wrapper">
-        <h1 className="leader-board__header">
-          Leader Board
-        </h1>
-      </section>
-      <ul className="leader-board__content">
-        {leadersContent && leadersContent}
-      </ul>
-    </div>
+    <>
+      {leadersContent && <div className="leader-board">
+        <section className="leader-board__header-wrapper">
+          <h1 className="leader-board__header">
+            Leader Board
+          </h1>
+        </section>
+        <ul className="leader-board__content">
+          {leadersContent && leadersContent}
+        </ul>
+      </div>}
+      </>
   )
 }
 
-export default LeaderBoard;
+export default connect(state => ({
+  leadersData: state.gameData.leadersData
+}))(LeaderBoard);

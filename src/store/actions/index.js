@@ -1,7 +1,7 @@
 import { setGameSettings } from "./gameSettings";
 import { setGameMode } from "./gameMode";
 import { startGame, stepGame, stopGame } from "./gameStatus";
-import { addToCaught,	addToMissed, clearData } from "./gameData";
+import { addToCaught,	addToMissed, clearDots, getLeadersData } from "./gameData";
 
 export {
 	setGameSettings,
@@ -11,5 +11,6 @@ export {
 	stopGame,
 	addToCaught,
 	addToMissed,
-	clearData,
+	getLeadersData,
+	clearDots,
 }

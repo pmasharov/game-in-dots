@@ -17,8 +17,24 @@ export function gameDataReducer(state = initialState, action) {
 				...state,
 				missed: [...state.missed, action.payload]
 			}
-			case types.CLEAR_DATA:
-			return initialState
+    case types.SET_USER_NAME:
+      const name = action.payload
+			return {
+				...state,
+				name
+			}
+			case types.GET_LEADERS_DATA:
+      const leadersData = action.payload
+			return {
+				...state,
+				leadersData
+			}
+		case types.CLEAR_DOTS:
+			return {
+				...state,
+				missed: [],
+				caught: [],
+			}
 		default:
 			return state;
 	}

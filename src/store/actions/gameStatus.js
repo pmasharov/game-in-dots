@@ -17,9 +17,10 @@ function stepGame(payload) {
 	};
 }
 
-function stopGame() {
+function stopGame(name) {
 	return {
 		type: types.STOP_GAME,
+		payload: name
 	};
 }
 

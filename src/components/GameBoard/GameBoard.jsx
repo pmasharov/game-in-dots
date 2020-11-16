@@ -5,18 +5,17 @@ import constants from "../../constants/constants";
 import {
   setGameMode,
   startGame,
-  stopGame,
-  clearData,
+  clearDots,
 } from "../../store/actions";
 
 import { Area } from "../../components";
+import { setUserName } from "../../store/actions/gameData";
 
 const { GAME_MODES } = constants
 
 
 const GameBoard = ({
                      gameSettings,
-                     gameMode,
                      gameMode: {
                        field
                      },
@@ -32,7 +31,8 @@ const GameBoard = ({
 
                      dotClick,
                      onStartGame,
-                     onClearData,
+                     onSetUserName,
+                     onClearDots,
                      onChangeGameMode,
                    }) => {
 
@@ -42,7 +42,7 @@ const GameBoard = ({
   const isGameModeChoose = gameModeKey !== GAME_MODES.DEFAULT_MODE
 
   const handleChangeGameMode = e => {
-    onClearData()
+    onClearDots()
     changeGameModeKey(e.target.value)
     return onChangeGameMode(gameSettings[e.target.value])
   }
@@ -53,7 +53,8 @@ const GameBoard = ({
     && !isGameStarted
 
   const start = () => {
-    onClearData()
+    onClearDots()
+    onSetUserName(name)
     onStartGame()
   }
 
@@ -90,15 +91,15 @@ const GameBoard = ({
       </section>
       {isGameModeChoose && (
         <>
-        <section className="result-message-wrapper item">
-          {
-            isGameEnded && !isDataEmpty && (
-              <h2 className='result-message'>
-                {`${caught.length > missed.length ? name : 'Computer'} won`}
-              </h2>
-            )
-          }
-        </section>
+          <section className="result-message-wrapper item">
+            {
+              isGameEnded && !isDataEmpty && (
+                <h2 className='result-message'>
+                  {`${caught.length > missed.length ? name : 'Computer'} won`}
+                </h2>
+              )
+            }
+          </section>
           <section className='item'>
             <Area
               dotClick={dotClick}
@@ -128,11 +129,11 @@ const mapDispatchToProps = dispatch => ({
   onStartGame: () => {
     dispatch(startGame());
   },
-  onStopGame: () => {
-    dispatch(stopGame());
+  onSetUserName: name => {
+    dispatch(setUserName(name));
   },
-  onClearData: () => {
-    dispatch(clearData());
+  onClearDots: () => {
+    dispatch(clearDots());
   }
 })
 
