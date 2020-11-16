@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { connect } from "react-redux";
+import PropTypes from 'prop-types';
 
 import constants from "../../constants/constants";
 import {
@@ -16,9 +17,6 @@ const { GAME_MODES } = constants
 
 const GameBoard = ({
                      gameSettings,
-                     gameMode: {
-                       field
-                     },
                      gameStatus: {
                        isGameStarted,
                        isGameEnded
@@ -39,6 +37,7 @@ const GameBoard = ({
   const [name, changeName] = useState('')
   const [isNameChanged, changeIsNameChanged] = useState(false)
   const [gameModeKey, changeGameModeKey] = useState(GAME_MODES.DEFAULT_MODE)
+
   const isDataEmpty = !(caught.length > 0 || missed.length > 0)
   const isGameModeChoose = gameModeKey !== GAME_MODES.DEFAULT_MODE
 
@@ -144,6 +143,18 @@ const mapDispatchToProps = dispatch => ({
     dispatch(clearDots());
   }
 })
+
+GameBoard.propTypes = {
+  gameSettings: PropTypes.shape(),
+  gameStatus: PropTypes.shape(),
+  gameData: PropTypes.shape(),
+  activeDotIndex: PropTypes.number,
+  dotClick: PropTypes.func,
+  onStartGame: PropTypes.func,
+  onSetUserName: PropTypes.func,
+  onClearDots: PropTypes.func,
+  onChangeGameMode: PropTypes.func,
+}
 
 export default connect(
   mapStateToProps,

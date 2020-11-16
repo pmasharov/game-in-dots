@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import './assets/styles/main.scss';
 
@@ -162,5 +163,18 @@ const mapDispatchToProps = dispatch => ({
     dispatch(addToMissed(dotIndex));
   }
 })
+
+App.propTypes = {
+  gameSettings: PropTypes.shape(),
+  gameMode: PropTypes.shape(),
+  gameStatus: PropTypes.shape(),
+  gameData: PropTypes.shape(),
+  onGetGameSettings: PropTypes.func,
+  onChangeGameMode: PropTypes.func,
+  onStepGame: PropTypes.func,
+  onStopGame: PropTypes.func,
+  onAddToCaught: PropTypes.func,
+  onAddToMissed: PropTypes.func,
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

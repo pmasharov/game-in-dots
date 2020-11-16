@@ -42,6 +42,7 @@
   },
   "devDependencies": {
     "axios": "^0.21.0",
+    "prop-types": "^15.7.2",
     "react-redux": "^7.2.2"
   }
 }

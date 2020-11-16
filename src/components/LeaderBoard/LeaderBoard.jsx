@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
+import PropTypes from 'prop-types';
 
 import api from '../../api'
 
@@ -54,6 +55,13 @@ const LeaderBoard = ({
       </div>}
     </>
   )
+}
+
+LeaderBoard.propTypes = {
+  leadersData: PropTypes.arrayOf(
+    PropTypes.shape()
+  ),
+  dispatch: PropTypes.func,
 }
 
 export default connect(state => ({

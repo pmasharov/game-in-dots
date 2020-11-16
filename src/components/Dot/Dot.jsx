@@ -1,6 +1,8 @@
 import React from 'react';
-import { connect } from 'react-redux'
-import { getDynamicDotStyles } from "../ComponentStyleHelpers"
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+
+import { getDynamicDotStyles } from "../ComponentStyleHelpers";
 
 function Dot({
                isActive,
@@ -38,6 +40,15 @@ function Dot({
     className={dotClassList}
     style={dotDynamicStyles}
   />
+}
+
+Dot.propTypes = {
+  isActive: PropTypes.bool,
+  isCaught: PropTypes.bool,
+  areaSize: PropTypes.number,
+  dotClick: PropTypes.func,
+  dotIndex: PropTypes.number,
+  gameData: PropTypes.shape(),
 }
 
 export default connect(state => ({
