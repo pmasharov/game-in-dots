@@ -12,6 +12,10 @@
 
   caret-color: $color-gray-dark;
 
+  & option:last-child {
+    border-radius: 0 0 5px 5px;
+  }
+
   @media all and (max-width: $md) {
     font-size: 1rem;
     max-width: 100%;

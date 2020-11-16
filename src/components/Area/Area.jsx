@@ -32,6 +32,8 @@ function Area({
 								caughtList,
 								missedList,
 								activeDotIndex,
+								gameSettings,
+								gameMode,
 								gameMode: {
 									field: areaSize,
 								},
@@ -49,9 +51,16 @@ function Area({
 		caughtList: caughtList,
 		missedList: missedList,
 	});
+	const getAreaSizeMark = gameMode => {
+		const gameSettingsValues = Object.values(gameSettings)
+		const sameGameSettingsValue = gameSettingsValues.filter(item => item.field === gameMode.field)[0]
+		const currentModeKey = Object.keys(gameSettings).find(key => gameSettings[key].field === sameGameSettingsValue.field)
+		return currentModeKey.replace('Mode', '')
+	}
+	const areaSizeMark = getAreaSizeMark(gameMode)
 	return (
 		<div
-			className={'area'}
+			className={`area ${areaSizeMark}`}
 			style={areaDynamicStyles}
 		>
 			{dotsList}
@@ -61,5 +70,6 @@ function Area({
 
 export default connect(state => ({
 	gameMode: state.gameMode,
-	gameStatus: state.gameStatus
+	gameStatus: state.gameStatus,
+	gameSettings: state.gameSettings,
 }))(Area);

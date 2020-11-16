@@ -12,14 +12,24 @@
       flex-direction: column;
     }
   }
-  & .result-message-wrapper {
+  & .result-message-wrapper.item {
     display: flex;
     justify-content: center;
     min-height: 70px;
 
+    @media all and (max-width: $lg) {
+      max-width: 75%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
     & .result-message {
       color: $color-gray-dark;
       font-size: 1.5rem;
+
+      @media all and (max-width: $lg) {
+        font-size: 1rem;
+      }
     }
   }
   & .item {
