@@ -67,6 +67,7 @@ const App = ({
     let newDotIndex = Math.floor(Math.random() * (max - min + 1)) + min;
 
     if (caught && missed) {
+      //TODO optimize with each step excluding dot item from different array
       while (caught.includes(newDotIndex) || missed.includes(newDotIndex)) {
         newDotIndex = Math.floor(Math.random() * (max - min + 1)) + min;
       }
@@ -110,7 +111,7 @@ const App = ({
         changeActiveDotIndex(getNextActiveDotIndex(caught, missed))
 
         onStepGame(remaining)
-      }, 700);
+      }, delay);
 
       if (somebodyWon) {
         clearInterval(interval)
